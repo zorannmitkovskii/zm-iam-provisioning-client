@@ -1,0 +1,9 @@
+serviceId: env-svc
+manifestVersion: 1
+realms:
+  - name: env-realm
+    clients:
+      - clientId: env-fe
+        type: PUBLIC
+        redirectUris:
+          - "https://${APP_DOMAIN}/*"
