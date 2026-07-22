@@ -1,0 +1,4 @@
+# JitPack build config. The project targets Java 21 (Spring Boot 3.5), but
+# JitPack's default JDK is older — pin it so the on-demand build compiles.
+jdk:
+  - openjdk21
