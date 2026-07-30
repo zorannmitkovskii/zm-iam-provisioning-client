@@ -128,7 +128,7 @@ class IamProvisioningClientTest {
         return new ServiceProvisioningManifest("svc", 1, List.of(
                 new RealmDeclaration("app", null, List.of(
                         new ClientDeclaration("app-fe", ClientType.PUBLIC, null,
-                                List.of("https://x.mk/*"), null, null, null, null)),
+                                List.of("https://x.mk/*"), null, null, null, null, null)),
                         null, null, null)));
     }
 }
