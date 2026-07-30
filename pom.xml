@@ -14,7 +14,7 @@
 
     <groupId>zm</groupId>
     <artifactId>zm-iam-provisioning-client</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <name>zm-iam-provisioning-client</name>
     <description>
         Spring Boot starter that ships a service's iam-manifest.yml to IAM at
