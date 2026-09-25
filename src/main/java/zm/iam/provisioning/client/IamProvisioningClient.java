@@ -1,6 +1,7 @@
 package zm.iam.provisioning.client;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import zm.iam.provisioning.client.dto.ServiceProvisioningManifest;
 import zm.iam.provisioning.client.response.ApplyResponse;
@@ -52,7 +53,7 @@ public class IamProvisioningClient {
         byte[] body;
         try {
             body = mapper.writeValueAsBytes(manifest);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException("Could not serialise manifest to JSON", e);
         }
 
@@ -119,7 +120,7 @@ public class IamProvisioningClient {
         try {
             ApplyResponse.Envelope env = mapper.readValue(body, ApplyResponse.Envelope.class);
             return env.data();
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IamProvisioningException("Could not parse IAM response: " + body, 200, e);
         }
     }

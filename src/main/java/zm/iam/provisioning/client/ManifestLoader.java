@@ -1,8 +1,9 @@
 package zm.iam.provisioning.client;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.DeserializationFeature;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.dataformat.yaml.YAMLMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -49,8 +50,12 @@ public class ManifestLoader {
                           Function<String, String> envSupplier) {
         this.resourceLoader = resourceLoader;
         this.envSupplier = envSupplier;
-        this.yaml = new ObjectMapper(new YAMLFactory())
-                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true);
+        // A manifest with a key we do not know is a typo, not a new feature,
+        // so unknown properties stay fatal. Built rather than configured —
+        // Jackson 3's mapper is immutable.
+        this.yaml = YAMLMapper.builder()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, true)
+                .build();
         this.validator = Validation.buildDefaultValidatorFactory().getValidator();
     }
 
@@ -73,7 +78,7 @@ public class ManifestLoader {
         ServiceProvisioningManifest manifest;
         try {
             manifest = yaml.readValue(resolved, ServiceProvisioningManifest.class);
-        } catch (IOException e) {
+        } catch (JacksonException e) {
             throw new IllegalStateException("Manifest at " + path
                     + " is not valid YAML for ServiceProvisioningManifest: " + e.getMessage(), e);
         }

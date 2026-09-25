@@ -1,7 +1,8 @@
 package zm.iam.provisioning.client;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
+import tools.jackson.databind.json.JsonMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -34,9 +35,13 @@ public class IamProvisioningAutoConfiguration {
         // Dedicated mapper — NON_NULL so nulls don't clutter the request
         // body. defaultCandidate = false would be nice but @Bean names are
         // enough scoping here.
-        ObjectMapper m = new ObjectMapper();
-        m.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-        return m;
+        // Built rather than configured: Jackson 3's mapper is immutable, so
+        // the inclusion setting moves onto the builder. withValueInclusion
+        // keeps the old meaning — nulls dropped as property values, and
+        // untouched inside maps and lists.
+        return JsonMapper.builder()
+                .changeDefaultPropertyInclusion(v -> v.withValueInclusion(JsonInclude.Include.NON_NULL))
+                .build();
     }
 
     @Bean

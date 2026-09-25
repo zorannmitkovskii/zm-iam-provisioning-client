@@ -8,7 +8,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.5.6</version>
+        <version>4.1.1</version>
         <relativePath/>
     </parent>
 
@@ -24,7 +24,11 @@
     <packaging>jar</packaging>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>25</java.version>
+        <!-- Pinned ahead of what the parent manages: Lombok reads javac
+             internals, so a JDK it predates fails the compile with
+             "TypeTag :: UNKNOWN" rather than a readable error. -->
+        <lombok.version>1.18.48</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
@@ -40,13 +44,18 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- Jackson (JSON out for requests + YAML in for the manifest). -->
+        <!-- Jackson (JSON out for requests + YAML in for the manifest).
+
+             Jackson 3 coordinates: Spring Boot 4 auto-configures the
+             tools.jackson mapper, so a library still asking for the
+             com.fasterxml artifacts compiles against a Jackson nobody in
+             the application is using. -->
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
+            <groupId>tools.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <groupId>tools.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
         </dependency>
 
@@ -93,7 +102,7 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.34</version>
+                            <version>1.18.48</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
