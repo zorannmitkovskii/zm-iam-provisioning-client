@@ -75,6 +75,15 @@ class ManifestLoaderTest {
         assertThat(m.realms().get(1).name()).isEqualTo("zm-services");
     }
 
+    @Test
+    @DisplayName("Realm session lifespans parse — unknown-field strictness would otherwise refuse them")
+    void sessionLifespansParse() {
+        var loader = new ManifestLoader(new DefaultResourceLoader(), noEnv());
+        var settings = loader.load("classpath:manifests/valid/session-lifespans.yml").realms().get(0).settings();
+        assertThat(settings.ssoSessionIdleTimeoutSeconds()).isEqualTo(604800);
+        assertThat(settings.ssoSessionMaxLifespanSeconds()).isEqualTo(2592000);
+    }
+
     private static Function<String, String> noEnv() {
         return name -> null;
     }
