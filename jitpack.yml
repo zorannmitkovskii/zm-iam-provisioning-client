@@ -1,4 +1,7 @@
-# JitPack build config. The project targets Java 21 (Spring Boot 3.5), but
-# JitPack's default JDK is older — pin it so the on-demand build compiles.
-jdk:
-  - openjdk21
+# JitPack build config. The project targets Java 25 (Spring Boot 4, Jackson 3),
+# and JitPack's built-in JDKs stop short of it, so the build installs Temurin 25
+# through SDKMAN first — the way JitPack documents custom JDKs. Without this the
+# on-demand build compiles with an older javac and fails on release 25.
+before_install:
+  - sdk install java 25.0.4-tem
+  - sdk use java 25.0.4-tem
